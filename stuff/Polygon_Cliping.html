@@ -1,0 +1,92 @@
+
+<!-- saved from url=(0065)https://www.cs.helsinki.fi/group/goa/viewing/leikkaus/intro2.html -->
+<html class="gr__cs_helsinki_fi"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title></title>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="maroon" vlink="navy" alink="ff0000" data-gr-c-s-loaded="true">
+
+<h1><a name="suthHodg">Sutherland - Hodgman Polygon Clipping</a></h1>
+
+<p>The Sutherland - Hodgman algorithm performs a clipping of a polygon against each window edge in turn. It accepts an ordered sequence of verices v1, v2, v3, ..., vn and puts out a set of vertices defining the clipped 
+polygon.
+</p><p>
+  
+<img src="./intro2_files/BEFORECP.GIF"> This figure represents a polygon (the large, solid, upward pointing arrow) before clipping has occurred.
+</p><p>
+
+The following figures show how this algorithm works at each edge, clipping the polygon.
+</p><p>
+<img src="./intro2_files/FIG2.GIF">
+</p><p>
+
+</p><ol type="a">
+<li>Clipping against the left side of the clip window.<p>
+</p></li><li>Clipping against the top side of the clip window.<p>
+</p></li><li>Clipping against the right side of the clip window.<p>
+</p></li><li>Clipping against the bottom side of the clip window.
+</li></ol>
+<hr>
+ 
+
+<h2><a name="types">Four Types of Edges</a></h2>
+
+<p> As the algorithm goes around the edges of the window, clipping the polygon, it encounters four types of edges. All four edge types are illustrated by the polygon in the following figure. For each edge type, zero, one, or two vertices are added to the output list of vertices that define the clipped polygon. </p><p>
+
+<img src="./intro2_files/FOUR.GIF">
+
+</p><p> The four types of edges are:
+</p><ol>
+<li>Edges that are totally inside the clip window.
+        - add the second inside vertex point
+</li><li>Edges that are leaving the clip window.
+        - add the intersection point as a vertex
+</li><li>Edges that are entirely outside the clip window.
+        - add nothing to the vertex output list
+</li><li>Edges that are entering the clip window.
+        - save the intersection and inside points as vertices<p>
+</p></li></ol>
+<hr>
+<h2><a name="calcInt">How To Calculate Intersections</a></h2>
+
+<p>Assume that we're clipping a polgon's edge with vertices at (x1,y1) and (x2,y2) against a clip window with vertices at (xmin, ymin) and (xmax,ymax).
+
+</p><p>The location (IX, IY) of the intersection of the edge with the left side of the window is:
+</p><ol type="i">
+<li>IX = xmin
+</li><li>IY = slope*(xmin-x1) + y1, where the slope = (y2-y1)/(x2-x1)
+</li></ol>
+
+<p>The location of the intersection of the edge with the right side of the window is:
+</p><ol type="i">
+<li>IX = xmax
+</li><li>IY = slope*(xmax-x1) + y1, where the slope = (y2-y1)/(x2-x1)
+</li></ol>
+
+<p>The intersection of the polygon's edge with the top side of the window is:
+</p><ol type="i">
+<li>IX = x1 + (ymax - y1) / slope
+</li><li>IY = ymax
+</li></ol>
+
+<p>Finally, the intersection of the edge with the bottom side of the window is:
+</p><ol type="i">
+<li>IX = x1 + (ymin - y1) / slope
+</li><li>IY = ymin
+</li></ol>   
+<hr>
+
+<h2><a name="probs">Some Problems With This Algorithm</a></h2>
+  <ol> 
+  <li> This algorithm does not work if the clip window is not convex. 
+  </li><li> If the polygon is not also convex, there may be some dangling edges.
+  </li></ol>
+
+<hr>
+
+<p>
+<a href="https://www.cs.helsinki.fi/group/goa/disclaimer/sources.html"><i>From P. Asokarathinam -- see details</i>
+</a>
+<i>27.11.1996</i>
+
+
+</p><span style="border-radius: 3px; text-indent: 20px; width: auto; padding: 0px 4px 0px 0px; text-align: center; font-style: normal; font-variant: normal; font-weight: bold; font-stretch: normal; font-size: 11px; line-height: 20px; font-family: &quot;Helvetica Neue&quot;, Helvetica, sans-serif; color: rgb(255, 255, 255); background: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMzBweCIgd2lkdGg9IjMwcHgiIHZpZXdCb3g9Ii0xIC0xIDMxIDMxIj48Zz48cGF0aCBkPSJNMjkuNDQ5LDE0LjY2MiBDMjkuNDQ5LDIyLjcyMiAyMi44NjgsMjkuMjU2IDE0Ljc1LDI5LjI1NiBDNi42MzIsMjkuMjU2IDAuMDUxLDIyLjcyMiAwLjA1MSwxNC42NjIgQzAuMDUxLDYuNjAxIDYuNjMyLDAuMDY3IDE0Ljc1LDAuMDY3IEMyMi44NjgsMC4wNjcgMjkuNDQ5LDYuNjAxIDI5LjQ0OSwxNC42NjIiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+PHBhdGggZD0iTTE0LjczMywxLjY4NiBDNy41MTYsMS42ODYgMS42NjUsNy40OTUgMS42NjUsMTQuNjYyIEMxLjY2NSwyMC4xNTkgNS4xMDksMjQuODU0IDkuOTcsMjYuNzQ0IEM5Ljg1NiwyNS43MTggOS43NTMsMjQuMTQzIDEwLjAxNiwyMy4wMjIgQzEwLjI1MywyMi4wMSAxMS41NDgsMTYuNTcyIDExLjU0OCwxNi41NzIgQzExLjU0OCwxNi41NzIgMTEuMTU3LDE1Ljc5NSAxMS4xNTcsMTQuNjQ2IEMxMS4xNTcsMTIuODQyIDEyLjIxMSwxMS40OTUgMTMuNTIyLDExLjQ5NSBDMTQuNjM3LDExLjQ5NSAxNS4xNzUsMTIuMzI2IDE1LjE3NSwxMy4zMjMgQzE1LjE3NSwxNC40MzYgMTQuNDYyLDE2LjEgMTQuMDkzLDE3LjY0MyBDMTMuNzg1LDE4LjkzNSAxNC43NDUsMTkuOTg4IDE2LjAyOCwxOS45ODggQzE4LjM1MSwxOS45ODggMjAuMTM2LDE3LjU1NiAyMC4xMzYsMTQuMDQ2IEMyMC4xMzYsMTAuOTM5IDE3Ljg4OCw4Ljc2NyAxNC42NzgsOC43NjcgQzEwLjk1OSw4Ljc2NyA4Ljc3NywxMS41MzYgOC43NzcsMTQuMzk4IEM4Ljc3NywxNS41MTMgOS4yMSwxNi43MDkgOS43NDksMTcuMzU5IEM5Ljg1NiwxNy40ODggOS44NzIsMTcuNiA5Ljg0LDE3LjczMSBDOS43NDEsMTguMTQxIDkuNTIsMTkuMDIzIDkuNDc3LDE5LjIwMyBDOS40MiwxOS40NCA5LjI4OCwxOS40OTEgOS4wNCwxOS4zNzYgQzcuNDA4LDE4LjYyMiA2LjM4NywxNi4yNTIgNi4zODcsMTQuMzQ5IEM2LjM4NywxMC4yNTYgOS4zODMsNi40OTcgMTUuMDIyLDYuNDk3IEMxOS41NTUsNi40OTcgMjMuMDc4LDkuNzA1IDIzLjA3OCwxMy45OTEgQzIzLjA3OCwxOC40NjMgMjAuMjM5LDIyLjA2MiAxNi4yOTcsMjIuMDYyIEMxNC45NzMsMjIuMDYyIDEzLjcyOCwyMS4zNzkgMTMuMzAyLDIwLjU3MiBDMTMuMzAyLDIwLjU3MiAxMi42NDcsMjMuMDUgMTIuNDg4LDIzLjY1NyBDMTIuMTkzLDI0Ljc4NCAxMS4zOTYsMjYuMTk2IDEwLjg2MywyNy4wNTggQzEyLjA4NiwyNy40MzQgMTMuMzg2LDI3LjYzNyAxNC43MzMsMjcuNjM3IEMyMS45NSwyNy42MzcgMjcuODAxLDIxLjgyOCAyNy44MDEsMTQuNjYyIEMyNy44MDEsNy40OTUgMjEuOTUsMS42ODYgMTQuNzMzLDEuNjg2IiBmaWxsPSIjYmQwODFjIj48L3BhdGg+PC9nPjwvc3ZnPg==&quot;) 3px 50% / 14px 14px no-repeat rgb(189, 8, 28); position: absolute; opacity: 1; z-index: 8675309; display: none; cursor: pointer; border: none; -webkit-font-smoothing: antialiased;">Save</span><span style="width: 24px; height: 24px; background: url(&quot;data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxkZWZzPjxtYXNrIGlkPSJtIj48cmVjdCBmaWxsPSIjZmZmIiB4PSIwIiB5PSIwIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHJ4PSI2IiByeT0iNiIvPjxyZWN0IGZpbGw9IiMwMDAiIHg9IjUiIHk9IjUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgcng9IjEiIHJ5PSIxIi8+PHJlY3QgZmlsbD0iIzAwMCIgeD0iMTAiIHk9IjAiIHdpZHRoPSI0IiBoZWlnaHQ9IjI0Ii8+PHJlY3QgZmlsbD0iIzAwMCIgeD0iMCIgeT0iMTAiIHdpZHRoPSIyNCIgaGVpZ2h0PSI0Ii8+PC9tYXNrPjwvZGVmcz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IiNmZmYiIG1hc2s9InVybCgjbSkiLz48L3N2Zz4=&quot;) 50% 50% / 14px 14px no-repeat rgba(0, 0, 0, 0.4); position: absolute; opacity: 1; z-index: 8675309; display: none; cursor: pointer; border: none; border-radius: 12px;"></span></body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>

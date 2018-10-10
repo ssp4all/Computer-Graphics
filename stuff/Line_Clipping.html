@@ -1,0 +1,320 @@
+
+<!-- saved from url=(0068)https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html -->
+<html class="gr__cc_gatech_edu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Computer Graphics - Clipping</title>
+<link rev="made" href="mailto:hhsieh@cc.gatech.edu">
+</head>
+
+<body data-gr-c-s-loaded="true"><a name="Top">
+<h1>Computer Graphics - Clipping</h1>
+
+<hr> <!--=========================================================-->
+
+  <h2>Table of Contents</h2>
+
+  </a><menu><a name="Top">
+    </a><a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec1">1 Concept</a><br>
+    <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec2">2 Line Clipping</a><br>
+      <menu>
+        <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec2_1">
+        2.1 Clipping Individual Points </a><br>
+        <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec2_2">
+        2.2  Solve Simultaneous Equations </a><br>
+        <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec2_3">
+        2.3 The Cohen-Sutherland Line-Clipping Algorithm </a><br>
+          <menu>
+             <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec2_3_1">
+             2.3.1 Steps for Cohen-Sutherland Algorithm</a><br>
+             <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec2_3_2">
+             2.3.2 Pseudo-code of Cohen-Sutherland Algorithm</a><br>
+             <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec2_3_3">
+             2.3.3 Trivial Acceptance/Reject Test</a><br>
+             <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec2_3_4">
+             2.3.4 Conclusion</a><br>
+          </menu>
+      </menu>
+    <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec3">3 Clipping Polygons</a><br>
+      <menu>
+        <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec3_1">
+        3.1 Steps of Sutherland-Hodgman's polygon-clipping algorithm
+        </a><br>
+        <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec3_2">
+        3.2 Pseudo-code of Sutherland-Hodgman's Polygon clipping algorithm
+        </a><br>
+        <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#sec3_3">
+        3.3 Four Cases of polygon clipping against one edge
+        </a><br>
+      </menu>
+  </menu>
+
+  <h2> Detailed Topics </h2>
+      <ul>
+        <li> A simple <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec1_example.html">example</a> for line clipping.
+        </li><li> <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec2_quiz.html"> Quiz</a> about line clipping.
+        </li><li> <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec2_outcode.html">Outcode</a>.</li>
+        <li> Pseudo-code of 
+             <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/code1.html"> Cohen-Sutherland</a> Algorithm. 
+        </li><li> <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec3_step.html">STEP-BY-STEP example</a>
+             of polygon clipping.
+        </li><li> Pseudo-Code of <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/code2.html">Sutherland and Hodgman's 
+             polygon-clipping</a> Algorithm.
+        </li><li> <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec3_case.html">Four cases</a> in edge-by-edge
+             clipping <p></p>
+      </li></ul>
+
+  <hr> <!--=========================================================-->
+
+  <a name="sec1">
+  <h2>1. Concept</h2></a>
+
+    <p>It is desirable to restrict the effect of graphics
+       primitives to a subregion of the canvas, to protect
+       other portions of the canvas. All primitives are
+       clipped to the boundaries of this <b>clipping rectangle</b>;
+       that is, primitives lying outside the clip rectangle
+       are not drawn. </p>
+
+    <p>The default clipping rectangle is the full canvas (
+       the screen ), and it is obvious that we cannot see any
+       graphics primitives outside the screen.</p>
+
+    <p>A simple <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec1_example.html">example</a>
+       of line clipping can illustrate this idea.</p>
+
+
+  <p>Go back to <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#Top">Table of Contents</a></p>
+
+  <hr> <!--=========================================================-->
+
+  <a name="sec2">
+  <h2>2. Line Clipping</h2></a>
+
+    <p>This section treats clipping of lines against rectangles.
+       Although there are specialized algorithms for rectangle
+       and polygon clipping, it is important to note that other
+       graphic primitives can be clipped by repeated application
+       of the line clipper. </p>
+
+    <ol>
+
+    <a name="sec2_1">
+    <h3><li>Clipping Individual Points</li></h3>
+
+      <p>Before we discuss clipping lines, let's look at the simpler
+         problem of clipping individual points. </p>
+      <p>If the x coordinate boundaries of the clipping rectangle are
+         Xmin and Xmax, and the y coordinate boundaries are Ymin and
+         Ymax, then the following inequalities must be satisfied for
+         a point at (X,Y) to be inside the clipping rectangle: </p>
+
+      <pre>            Xmin &lt; X &lt; Xmax
+        and Ymin &lt; Y &lt; Ymax
+      </pre>
+
+      <p>If any of the four inequalities does not hold, the point is
+         outside the clipping rectangle.</p>
+
+      </a><p><a name="sec2_1">See if you can answer these </a><a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec2_quiz.html">
+         questions</a></p>
+
+    <a name="sec2_2">
+    <h3><li>Solve Simultaneous Equations </li></h3>
+
+      </a><p><a name="sec2_2">To clip a line, we need to consider only its endpoints,
+         not its infinitely many interior points. If both endpoints
+         of a line lie inside the clip rectangle (eg AB, refer to
+         </a><a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/pic1.gif">the first example</a> ), the entire line
+         lies inside the clip rectangle and can be <b>trivially
+         accepted</b>. If one endpoint lies inside and one outside(eg CD),
+         the line intersects the clip rectangle and we must compute
+         the intersection point. If both endpoints are outside the clip
+         rectaangle, the line may or may not intersect with the
+         clip rectangle (EF, GH, and IJ), and we need to perform 
+         further calculations to determine whether there are any 
+         intersections.</p>
+
+      <p>The brute-force approach to clipping a line that cannot be
+         trivially accepted is to intersect that line with each of
+         the four clip-rectangle edges to see whether any intersection
+         points lie on those edges; if so, the line cuts the clip rectangle
+         and is partially inside. For each line and clip-rectangle edge, we
+         therefore take the two mathematically infinite lines that
+         contain them and intersect them. Next, we test whether this
+         intersection point is "interior" -- that is, whether it lies
+         within both the clip rectangle edge and the line; if so,
+         there is an intersection with the clip rectangle. In
+         the first example, intersection points G' and H' are
+         interior, but I' and J' are not.</p>
+
+
+    <a name="sec2_3">
+    <h3><li>The Cohen-Sutherland Line-Clipping Algorithm</li></h3>
+
+      <p>The more efficient Cohen-Sutherland Algorithm
+         performs initial tests on a line to determine whether
+         intersection calculations can be avoided. </p>
+
+      </a><a name="sec2_3_1">
+      <h4>Steps for Cohen-Sutherland algorithm</h4>
+        </a><ol><a name="sec2_3_1">
+        </a><li><a name="sec2_3_1"> End-points pairs are check for trivial acceptance or
+             trivial rejected using the 
+             </a><a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec2_outcode.html">outcode</a>.</li>
+        <li> If not trivial-accepance or trivial-rejected, divided
+             into two segments at a clip edge.</li>
+        <li> Iteratively clipped by testing trivial-acceptance
+             or trivial-rejected, and divided into two segments
+             until completely inside or trivial-rejected.</li>
+        </ol>
+
+      <a name="sec2_3_2">
+      </a><h4><a name="sec2_3_2">Pseudo-code of 
+         </a><a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/code1.html"> Cohen-Sutherland</a> Algorithm. 
+      </h4>
+
+      <a name="sec2_3_3">
+      <h4>Trivial acceptance/reject test</h4>
+
+        <p>To perform trivial accept and reject tests, we extend the
+           edges of the clip rectangle to divide the plane of the clip
+           rectangle into nine regions.  Each region is assigned a 4-bit code 
+           deteermined by where the region lies with respect to the outside
+           halfplanes of the clip-rectangle edges. Each bit in the outcode
+           is set to either 1 (true) or 0 (false);
+           the 4 bits in the code correspond to the following conditions:</p>
+
+        <ul>
+        <li> Bit 1 : outside halfplane of top edge, above top edge<br>
+                     Y &gt; Ymax</li>
+        <li> Bit 2 : outside halfplane of bottom edge, below bottom edge<br>
+                     Y &lt; Ymin</li>
+        <li> Bit 3 : outside halfplane of right edge, to the right of
+                     right edge<br>
+                     X &gt; Xmax</li>
+        <li> Bit 4 : outside halfplane of left edge, to the left of
+                     left edge<br>
+                     X &lt; Xmin </li>
+        </ul>
+
+      </a><a name="sec2_3_4">
+      <h4>Conclusion</h4>
+
+        <p>In summary, the C-S algorithm is efficient when outcode
+           testing can be done cheaply (for example, by doing bitwise
+           operations in assembly language) and trivial acceptance
+           or rejection is applicable to the majority of line segments
+           .(For example, large windows - everything is inside , or
+           small windows - everything is outside).</p>
+
+    </a></ol><a name="sec2_3_4">
+
+  </a><p><a name="sec2_3_4">Go back to </a><a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#Top">Table of Contents</a></p>
+  <hr> <!--=========================================================-->
+
+  <a name="sec3">
+  <h2>1.3 Clipping Polygons</h2></a>
+
+    <p>An algorithm that clips a polygon must deal with many
+       different cases. The case is
+       particularly note worthy in that the concave polygon is
+       clipped into two separate polygons. All in all, the task
+       of clipping seems rather complex. Each edge of the polygon
+       must be tested against each edge of the clip rectangle;
+       new edges must be added, and existing edges must be
+       discarded, retained, or divided. Multiple polygons may
+       result from clipping a single polygon. We need an organized
+       way to deal with all these cases.</p>
+
+    <p>The following example illustrate a simple case of polygon
+       clipping.</p> 
+
+
+    <img src="./Computer Graphics - Clipping_files/pic6.gif">
+
+
+
+    <p>Sutherland and Hodgman's polygon-clipping algorithm 
+       uses a divide-and-conquer strategy: It solves a
+       series of simple and identical problems that, when combined,
+       solve the overall problem. The simple problem is to clip a
+       polygon against a single infinite clip edge. Four clip edges,
+       each defining one boundary of the clip rectangle, successively
+       clip a polygon against a clip rectangle.</p>
+
+    <p>Note the difference between this strategy for a polygon and the
+       Cohen-Sutherland algorithm for clipping a line: The polygon
+       clipper clips against four edges in succession, whereas the
+       line clipper tests the outcode to see which edge is crossed, and
+       clips only when necessary.</p>
+
+
+      <a name="sec3_1">
+      <h3>Steps of Sutherland-Hodgman's polygon-clipping algorithm</h3>
+
+        <ul>
+        <li>Polygons can be clipped against each edge of the
+            window one at a time. Windows/edge intersections,
+            if any, are easy to find since the X or Y
+            coordinates are already known.</li>
+        <li>Vertices which are kept after clipping against one
+            window edge are saved for clipping against the
+            remaining edges.</li>
+        <li>Note that the number of vertices usually changes
+            and will often increases.</li>
+        <li>We are using the Divide and Conquer approach.</li>
+        </ul>
+
+        </a><p><a name="sec3_1">Here is a </a><a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec3_step.html">STEP-BY-STEP example</a>
+           of polygon clipping.</p>
+
+     
+      <a name="sec3_2">
+      </a><h3><a name="sec3_2">Pseudo-Code of </a><a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/code2.html">Sutherland and Hodgman's 
+          polygon-clipping</a> Algorithm.</h3>
+
+      <a name="sec3_3">
+      <h3>Four Cases of polygon clipping against one edge</h3>
+
+
+        </a><p><a name="sec3_3">The clip boundary determines a visible and invisible region.
+           The edges from vertex i to vertex i+1 can be one of 
+           </a><a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/sec3_case.html">four types</a>:</p>
+
+        <ul>
+        <li> Case 1  : Wholly inside visible region
+                   - save endpoint
+        </li><li> Case 2  : Exit visible region
+                   - save the intersection
+        </li><li> Case 3  : Wholly outside visible region
+                   - save nothing
+        </li><li> Case 4  : Enter visible region
+                   - save intersection and endpoint
+        </li></ul>
+
+        <p>Because clipping against one edge is independent of all
+           others, it is possible to arrange the clipping stages in
+           a pipeline. The input polygon is clipped against one edge
+           and any points that are kept are passed on as input to the
+           next stage of the pipeline. This way four polygons can be
+           at different stages of the clipping process simultaneously.
+           This is often implemented in hardware.</p>
+
+  <hr> <!--=========================================================-->
+
+  <p>Go back to <a href="https://www.cc.gatech.edu/grads/h/Hao-wei.Hsieh/Haowei.Hsieh/mm.html#Top">Table of Contents</a></p>
+  <p>Back to 
+     <a href="http://www.cc.gatech.edu/gvu/multimedia/nsfmmedia/related.html">
+     Computer Graphics Courseware</a></p>
+
+<hr> <!--=========================================================-->
+
+<address>
+  <p>Contact:<br>
+  Haowei Hsieh<br>
+  hhsieh@cc.gatech.edu<br>
+  http://www.cc.gatech.edu/gvu/people/Masters/Haowei.Hsieh.html<br>
+  Last Change : Feb 27,1995</p>
+</address>
+
+
+<span style="border-radius: 3px; text-indent: 20px; width: auto; padding: 0px 4px 0px 0px; text-align: center; font-style: normal; font-variant: normal; font-weight: bold; font-stretch: normal; font-size: 11px; line-height: 20px; font-family: &quot;Helvetica Neue&quot;, Helvetica, sans-serif; color: rgb(255, 255, 255); background: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMzBweCIgd2lkdGg9IjMwcHgiIHZpZXdCb3g9Ii0xIC0xIDMxIDMxIj48Zz48cGF0aCBkPSJNMjkuNDQ5LDE0LjY2MiBDMjkuNDQ5LDIyLjcyMiAyMi44NjgsMjkuMjU2IDE0Ljc1LDI5LjI1NiBDNi42MzIsMjkuMjU2IDAuMDUxLDIyLjcyMiAwLjA1MSwxNC42NjIgQzAuMDUxLDYuNjAxIDYuNjMyLDAuMDY3IDE0Ljc1LDAuMDY3IEMyMi44NjgsMC4wNjcgMjkuNDQ5LDYuNjAxIDI5LjQ0OSwxNC42NjIiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+PHBhdGggZD0iTTE0LjczMywxLjY4NiBDNy41MTYsMS42ODYgMS42NjUsNy40OTUgMS42NjUsMTQuNjYyIEMxLjY2NSwyMC4xNTkgNS4xMDksMjQuODU0IDkuOTcsMjYuNzQ0IEM5Ljg1NiwyNS43MTggOS43NTMsMjQuMTQzIDEwLjAxNiwyMy4wMjIgQzEwLjI1MywyMi4wMSAxMS41NDgsMTYuNTcyIDExLjU0OCwxNi41NzIgQzExLjU0OCwxNi41NzIgMTEuMTU3LDE1Ljc5NSAxMS4xNTcsMTQuNjQ2IEMxMS4xNTcsMTIuODQyIDEyLjIxMSwxMS40OTUgMTMuNTIyLDExLjQ5NSBDMTQuNjM3LDExLjQ5NSAxNS4xNzUsMTIuMzI2IDE1LjE3NSwxMy4zMjMgQzE1LjE3NSwxNC40MzYgMTQuNDYyLDE2LjEgMTQuMDkzLDE3LjY0MyBDMTMuNzg1LDE4LjkzNSAxNC43NDUsMTkuOTg4IDE2LjAyOCwxOS45ODggQzE4LjM1MSwxOS45ODggMjAuMTM2LDE3LjU1NiAyMC4xMzYsMTQuMDQ2IEMyMC4xMzYsMTAuOTM5IDE3Ljg4OCw4Ljc2NyAxNC42NzgsOC43NjcgQzEwLjk1OSw4Ljc2NyA4Ljc3NywxMS41MzYgOC43NzcsMTQuMzk4IEM4Ljc3NywxNS41MTMgOS4yMSwxNi43MDkgOS43NDksMTcuMzU5IEM5Ljg1NiwxNy40ODggOS44NzIsMTcuNiA5Ljg0LDE3LjczMSBDOS43NDEsMTguMTQxIDkuNTIsMTkuMDIzIDkuNDc3LDE5LjIwMyBDOS40MiwxOS40NCA5LjI4OCwxOS40OTEgOS4wNCwxOS4zNzYgQzcuNDA4LDE4LjYyMiA2LjM4NywxNi4yNTIgNi4zODcsMTQuMzQ5IEM2LjM4NywxMC4yNTYgOS4zODMsNi40OTcgMTUuMDIyLDYuNDk3IEMxOS41NTUsNi40OTcgMjMuMDc4LDkuNzA1IDIzLjA3OCwxMy45OTEgQzIzLjA3OCwxOC40NjMgMjAuMjM5LDIyLjA2MiAxNi4yOTcsMjIuMDYyIEMxNC45NzMsMjIuMDYyIDEzLjcyOCwyMS4zNzkgMTMuMzAyLDIwLjU3MiBDMTMuMzAyLDIwLjU3MiAxMi42NDcsMjMuMDUgMTIuNDg4LDIzLjY1NyBDMTIuMTkzLDI0Ljc4NCAxMS4zOTYsMjYuMTk2IDEwLjg2MywyNy4wNTggQzEyLjA4NiwyNy40MzQgMTMuMzg2LDI3LjYzNyAxNC43MzMsMjcuNjM3IEMyMS45NSwyNy42MzcgMjcuODAxLDIxLjgyOCAyNy44MDEsMTQuNjYyIEMyNy44MDEsNy40OTUgMjEuOTUsMS42ODYgMTQuNzMzLDEuNjg2IiBmaWxsPSIjYmQwODFjIj48L3BhdGg+PC9nPjwvc3ZnPg==&quot;) 3px 50% / 14px 14px no-repeat rgb(189, 8, 28); position: absolute; opacity: 1; z-index: 8675309; display: none; cursor: pointer; border: none; -webkit-font-smoothing: antialiased; top: 2265px; left: 18px;">Save</span><span style="width: 24px; height: 24px; background: url(&quot;data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxkZWZzPjxtYXNrIGlkPSJtIj48cmVjdCBmaWxsPSIjZmZmIiB4PSIwIiB5PSIwIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHJ4PSI2IiByeT0iNiIvPjxyZWN0IGZpbGw9IiMwMDAiIHg9IjUiIHk9IjUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgcng9IjEiIHJ5PSIxIi8+PHJlY3QgZmlsbD0iIzAwMCIgeD0iMTAiIHk9IjAiIHdpZHRoPSI0IiBoZWlnaHQ9IjI0Ii8+PHJlY3QgZmlsbD0iIzAwMCIgeD0iMCIgeT0iMTAiIHdpZHRoPSIyNCIgaGVpZ2h0PSI0Ii8+PC9tYXNrPjwvZGVmcz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IiNmZmYiIG1hc2s9InVybCgjbSkiLz48L3N2Zz4=&quot;) 50% 50% / 14px 14px no-repeat rgba(0, 0, 0, 0.4); position: absolute; opacity: 1; z-index: 8675309; display: none; cursor: pointer; border: none; border-radius: 12px; top: 2263px; left: 431px;"></span></body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>

@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1446667738 source:g:\cgvr\myteacup\main.c
+	<windows.h>
+	<gl/gl.h>
+
+1506535767 source:g:\cgvr\myteacup\myteacup.cpp
+	<windows.h>
+	<GL/glut.h>
+
